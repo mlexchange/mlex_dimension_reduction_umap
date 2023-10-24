@@ -1,0 +1,8 @@
+pydantic
+numpy
+scikit-image
+Pillow
+joblib
+scikit-learn
+requests
+umap-learn
