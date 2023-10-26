@@ -6,3 +6,5 @@ joblib
 scikit-learn
 requests
 umap-learn
+pandas
+pyarrow

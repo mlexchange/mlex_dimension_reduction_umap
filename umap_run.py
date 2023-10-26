@@ -3,7 +3,7 @@ import argparse
 import pathlib
 import numpy as np
 import json
-from sklearn.preprocessing import StandardScaler
+import pandas as pd
 
 from utils import UMAPParameters
 
@@ -36,12 +36,18 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    images_path = pathlib.Path(args.image_dir)
+    images_dir = args.image_dir
     output_dir = pathlib.Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load images
-    images = np.load(images_path)['arr_0']
+    images = None
+    if images_dir == "data/example_shapes/Demoshapes.npz":
+        images = np.load(images_dir)['arr_0']
+    if images_dir == "data/example_latentrepresentation/f_vectors.parquet":
+        df = pd.read_parquet(images_dir)
+        images = df.values
+    print(images.shape)
 
     # Load dimension reduction parameter
     if args.parameters is not None:
