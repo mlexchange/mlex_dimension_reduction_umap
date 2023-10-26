@@ -23,7 +23,7 @@ run_docker:
 	docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}/data:/app/work/data/ -v ${IMG_WEB_SVC} bash
 
 UMAP_example:
-	docker run -u ${ID_USER $USER}:${ID_GROUP $USER} --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}:/app/work/ ${IMG_WEB_SVC} python umap_run.py data/Demoshapes.npz data/output '{"n_components": 2, "min_dist": 0.1, "n_neighbors": 7}'
+	docker run -u ${ID_USER $USER}:${ID_GROUP $USER} --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}:/app/work/ ${IMG_WEB_SVC} python umap_run.py data/example_shapes/Demoshapes.npz data/output '{"n_components": 2, "min_dist": 0.1, "n_neighbors": 7}'
 
 
 push_docker:
