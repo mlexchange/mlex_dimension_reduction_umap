@@ -15,7 +15,7 @@ First, build the dimension reduction image in terminal:
 Once built, you can run the following examples:
 `make UMAP_example`
 
-These examples utilize the information stored in the folder /data. The computed latent vectors will be saved in /output.
+These examples utilize the information stored in the folder /data. The computed latent vectors will be saved in data/output.
 
 #### TODO: run the container interactively
 
