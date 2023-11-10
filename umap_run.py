@@ -5,7 +5,7 @@ import numpy as np
 import json
 import pandas as pd
 
-from utils import UMAPParameters
+from utils import UMAPParameters, load_images_from_directory
 
 """ Compute UMAP
     Input: 1d data (N, M) or 2d data (N, H, W)
@@ -47,6 +47,8 @@ if __name__ == "__main__":
     if images_dir == "data/example_latentrepresentation/f_vectors.parquet":
         df = pd.read_parquet(images_dir)
         images = df.values
+    else: # user uploaded zip file
+        images = load_images_from_directory(images_dir)
     print(images.shape)
 
     # Load dimension reduction parameter
