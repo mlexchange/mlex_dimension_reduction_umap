@@ -44,7 +44,7 @@ if __name__ == "__main__":
     images = None
     if images_dir == "data/example_shapes/Demoshapes.npz":
         images = np.load(images_dir)['arr_0']
-    if images_dir == "data/example_latentrepresentation/f_vectors.parquet":
+    elif images_dir == "data/example_latentrepresentation/f_vectors.parquet":
         df = pd.read_parquet(images_dir)
         images = df.values
     else: # user uploaded zip file
