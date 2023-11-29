@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     
     # Save latent vectors
-    output_name = f'umap_{parameters.n_components}d_{parameters.n_neighbors}_{parameters.min_dist}.npy'
+    output_name = 'latent_vectors.npy'
     np.save(str(output_dir) + "/" + output_name, latent_vectors)
 
     print("UMAP done, latent vector saved.")

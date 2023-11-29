@@ -16,7 +16,6 @@ Once built, you can run the following examples:
 `make UMAP_example`
 which is equivalend to first `make run_docker` then `python umap_run.py data/example_shapes/Demoshapes.npz data/output '{"n_components": 2, "min_dist": 0.1, "n_neighbors": 7}'`.
 
-
 These examples utilize the information stored in the folder /data. The computed latent vectors will be saved in data/output.
 
 #### TODO: run the container interactively
