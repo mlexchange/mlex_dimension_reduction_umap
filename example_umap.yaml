@@ -1,0 +1,14 @@
+# Example for parameters to excecute
+
+# I/O
+io_parameters:
+  data_tiled_uri: https://tiled-seg.als.lbl.gov/api/v1/metadata/reconstruction/rec20190524_085542_clay_testZMQ_8bit/20190524_085542_clay_testZMQ_
+  data_tiled_api_key:
+  uid_save:
+  images_dir: 'data/example_shapes/Demoshapes.npz'
+  output_dir: 'data/output'
+
+model_parameters:
+  n_components: 2
+  min_dist: 0.1
+  n_neighbors: 5

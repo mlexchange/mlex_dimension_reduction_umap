@@ -4,6 +4,8 @@ import pathlib
 import numpy as np
 import json
 import pandas as pd
+import time
+import yaml
 
 from utils import UMAPParameters, load_images_from_directory
 
@@ -29,15 +31,27 @@ def computeUMAP(data,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('image_dir', help='image filepath')
-    parser.add_argument('output_dir', help='dir to save the computed latent vactors')
-    parser.add_argument('parameters', help='dictionary that contains model parameters')
-    
+    parser.add_argument("yaml_path", type=str, help="path of yaml file for parameters")
     args = parser.parse_args()
 
-    images_dir = args.image_dir
-    output_dir = pathlib.Path(args.output_dir)
+    # Open the YAML file for all parameters
+    with open(args.yaml_path, "r") as file:
+        # Load parameters
+        parameters = yaml.safe_load(file)
+
+    # Validate and load I/O related parameters
+    io_parameters = parameters["io_parameters"]
+    # Check input and output dir are provided
+    assert io_parameters["images_dir"], "Input dir (image filepath) not provided for training."
+    assert io_parameters["output_dir"], "Output dir (dir to save the computed latent vactors) not provided for training."
+
+    # Validate model parameters:
+    model_parameters = parameters["model_parameters"]
+    print("model_parameters")
+    print(model_parameters)
+
+    images_dir = io_parameters["images_dir"]
+    output_dir = pathlib.Path(io_parameters["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load images
@@ -53,23 +67,19 @@ if __name__ == "__main__":
     else: # user uploaded zip file
         images = load_images_from_directory(images_dir)
     print(images.shape)
-
-    # Load dimension reduction parameter
-    if args.parameters is not None:
-        parameters = UMAPParameters(**json.loads(args.parameters))
+    start_time = time.time()    
     
-    print(f'UMAP parameters: n_components={parameters.n_components}, min_dist={parameters.min_dist}, n_neighbors={parameters.n_neighbors}.')
-
-
     # Run UMAP
     latent_vectors = computeUMAP(images, 
-                                 n_components=parameters.n_components,
-                                 min_dist=parameters.min_dist,
-                                 n_neighbors=parameters.n_neighbors)
+                                 n_components=model_parameters['n_components'],
+                                 min_dist=model_parameters['min_dist'],
+                                 n_neighbors=model_parameters['n_neighbors'])
 
-    
     # Save latent vectors
     output_name = 'latent_vectors.npy'
     np.save(str(output_dir) + "/" + output_name, latent_vectors)
 
     print("UMAP done, latent vector saved.")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Execution time: {execution_time} seconds")
