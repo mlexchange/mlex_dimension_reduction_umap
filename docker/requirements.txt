@@ -8,3 +8,4 @@ requests
 umap-learn
 pandas
 pyarrow
+pyyaml
