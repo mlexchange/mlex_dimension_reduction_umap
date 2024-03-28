@@ -2,12 +2,11 @@ import umap.umap_ as umap
 import argparse
 import pathlib
 import numpy as np
-import json
 import pandas as pd
 import time
 import yaml
-
-from utils import UMAPParameters, load_images_from_directory
+from tiled.client import from_uri
+from utils import load_images_from_directory
 
 """ Compute UMAP
     Input: 1d data (N, M) or 2d data (N, H, W)
@@ -17,7 +16,8 @@ def computeUMAP(data,
                 n_components=2, 
                 min_dist=0.1, 
                 n_neighbors=15, 
-                random_state=42):
+                random_state=42,
+                standarize=False):
     data = data.reshape(data.shape[0], -1)
     #data = StandardScaler().fit_transform(data) 
 
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     # Validate and load I/O related parameters
     io_parameters = parameters["io_parameters"]
     # Check input and output dir are provided
-    assert io_parameters["images_dir"], "Input dir (image filepath) not provided for training."
     assert io_parameters["output_dir"], "Output dir (dir to save the computed latent vactors) not provided for training."
 
     # Validate model parameters:
@@ -50,23 +49,41 @@ if __name__ == "__main__":
     print("model_parameters")
     print(model_parameters)
 
-    images_dir = io_parameters["images_dir"]
-    output_dir = pathlib.Path(io_parameters["output_dir"])
+    # output directory
+    output_dir = pathlib.Path(io_parameters["output_dir"] + "/" + io_parameters["uid_save"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Load images
-    images = None
-    if images_dir == "data/example_shapes/Demoshapes.npz": # example dataset
-        images = np.load(images_dir)['arr_0']
-    elif images_dir == "data/example_latentrepresentation/f_vectors.parquet": # example dataset
-        df = pd.read_parquet(images_dir)
-        images = df.values
-    elif images_dir.split('.')[-1] == 'parquet': # data clinic
-        df = pd.read_parquet(images_dir)
-        images = df.values
-    else: # user uploaded zip file
-        images = load_images_from_directory(images_dir)
-    print(images.shape)
+    # Load images from given data_uris
+    stacked_images = None
+    data_uris = io_parameters["data_uris"]
+
+    print(data_uris)
+    for uri in data_uris:
+        if uri == 'data/example_shapes/Demoshapes.npz': # example dataset 
+            images = np.load(uri)['arr_0']    
+        if uri == 'data/example_shapes/Demoshapes.npz': # example dataset 
+            images = np.load(uri)['arr_0']
+        elif uri == 'data/example_latentrepresentation/f_vectors.parquet': # example dataset 
+            df = pd.read_parquet(uri)
+            images = df.values
+        # elif images_dir.split('.')[-1] == 'parquet': # data clinic
+        #     df = pd.read_parquet(images_dir)
+        #     images = df.values
+            
+        else: 
+            # FM, file system or tiled
+            if io_parameters["data_type"] == "file":
+                images = load_images_from_directory(io_parameters["root_uri"] + "/" + uri)
+            else: # tiled
+                tiled_client = from_uri(io_parameters["root_uri"], api_key=io_parameters["data_tiled_api_key"])
+                images = tiled_client[uri][:]
+
+        if stacked_images is None:
+            stacked_images = images
+        else:
+            stacked_images = np.concatenate(( stacked_images , images ), axis=0) 
+
+
     start_time = time.time()    
     
     # Run UMAP
@@ -77,7 +94,9 @@ if __name__ == "__main__":
 
     # Save latent vectors
     output_name = 'latent_vectors.npy'
-    np.save(str(output_dir) + "/" + output_name, latent_vectors)
+    save_path = str(output_dir) + '/' + output_name
+    print(save_path)
+    np.save(str(output_dir) + '/' + output_name, latent_vectors)
 
     print("UMAP done, latent vector saved.")
     end_time = time.time()
