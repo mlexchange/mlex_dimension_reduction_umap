@@ -13,8 +13,8 @@ class UMAPParameters(BaseModel):
     
 def load_images_from_directory(directory_path):
     image_data = []
-    for filename in os.listdir(directory_path):
-        if filename.endswith(".png"):
+    for filename in sorted(os.listdir(directory_path)):
+        if filename.lower().endswith((".png", ".tif", ".tiff", ".jpeg", ".jpg")):
             file_path = os.path.join(directory_path, filename)
             try:
                 img = Image.open(file_path)
