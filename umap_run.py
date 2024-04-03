@@ -18,7 +18,8 @@ def computeUMAP(data,
                 n_neighbors=15, 
                 random_state=42,
                 standarize=False):
-    data = data.reshape(data.shape[0], -1)
+    if len(data.shape) > 2:
+        data = data.reshape(data.shape[0], -1)
     #data = StandardScaler().fit_transform(data) 
 
     umap_model = umap.UMAP(n_components=n_components, 
@@ -42,7 +43,9 @@ if __name__ == "__main__":
     # Validate and load I/O related parameters
     io_parameters = parameters["io_parameters"]
     # Check input and output dir are provided
-    assert io_parameters["output_dir"], "Output dir (dir to save the computed latent vactors) not provided for training."
+    assert io_parameters[
+        "output_dir"
+    ], "Output dir (dir to save the computed latent vactors) not provided for training."
 
     # Validate model parameters:
     model_parameters = parameters["model_parameters"]
@@ -50,38 +53,53 @@ if __name__ == "__main__":
     print(model_parameters)
 
     # output directory
-    output_dir = pathlib.Path(io_parameters["output_dir"] + "/" + io_parameters["uid_save"])
+    output_dir = pathlib.Path(
+        io_parameters["output_dir"] + "/" + io_parameters["uid_save"]
+    )
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load images from given data_uris
     stacked_images = None
-    data_uris = io_parameters["data_uris"]
 
-    print(data_uris)
-    for uri in data_uris:
-        if uri == 'data/example_shapes/Demoshapes.npz': # example dataset 
-            images = np.load(uri)['arr_0']    
-        if uri == 'data/example_shapes/Demoshapes.npz': # example dataset 
-            images = np.load(uri)['arr_0']
-        elif uri == 'data/example_latentrepresentation/f_vectors.parquet': # example dataset 
-            df = pd.read_parquet(uri)
-            images = df.values
-        # elif images_dir.split('.')[-1] == 'parquet': # data clinic
-        #     df = pd.read_parquet(images_dir)
-        #     images = df.values
-            
-        else: 
-            # FM, file system or tiled
-            if io_parameters["data_type"] == "file":
-                images = load_images_from_directory(io_parameters["root_uri"] + "/" + uri)
-            else: # tiled
-                tiled_client = from_uri(io_parameters["root_uri"], api_key=io_parameters["data_tiled_api_key"])
-                images = tiled_client[uri][:]
+    uid_retrieve = io_parameters["uid_retrieve"]
+    if uid_retrieve is not None:
+        # Get feature vectors from autoencoder
+        stacked_images = pd.read_parquet(
+            f"data/mlexchange_store/{uid_retrieve}/f_vectors.parquet"
+        ).values
 
-        if stacked_images is None:
-            stacked_images = images
-        else:
-            stacked_images = np.concatenate(( stacked_images , images ), axis=0) 
+    else:
+        data_uris = io_parameters["data_uris"]
+
+        for uri in data_uris:
+            if "data/example_shapes/Demoshapes.npz" in uri:  # example dataset
+                images = np.load(uri)["arr_0"]
+            elif (
+                "data/example_latentrepresentation/f_vectors.parquet" in uri
+            ):  # example dataset
+                df = pd.read_parquet(uri)
+                images = df.values
+
+            else:
+                # FM, file system or tiled
+                if io_parameters["data_type"] == "file":
+                    images = load_images_from_directory(
+                        io_parameters["root_uri"] + "/" + uri
+                    )
+                else:  # tiled
+                    tiled_client = from_uri(
+                        io_parameters["root_uri"],
+                        api_key=io_parameters["data_tiled_api_key"],
+                    )
+                    images = tiled_client[uri][:]
+                    if len(images.shape) == 2:
+                        images = images[np.newaxis, :, :]
+
+            if stacked_images is None:
+                stacked_images = images
+            else:
+                stacked_images = np.concatenate((stacked_images, images), axis=0)
 
 
     start_time = time.time()    
