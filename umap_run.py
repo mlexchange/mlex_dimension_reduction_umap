@@ -1,34 +1,43 @@
-import umap.umap_ as umap
 import argparse
 import pathlib
+import time
+
 import numpy as np
 import pandas as pd
-import time
+import umap.umap_ as umap
 import yaml
 from tiled.client import from_uri
+
 from utils import load_images_from_directory
 
 """ Compute UMAP
     Input: 1d data (N, M) or 2d data (N, H, W)
     Output: latent vectors of shape (N, 2) or (N, 3)
 """
-def computeUMAP(data, 
-                n_components=2, 
-                min_dist=0.1, 
-                n_neighbors=15, 
-                random_state=42,
-                standarize=False):
+
+
+def computeUMAP(
+    data,
+    n_components=2,
+    min_dist=0.1,
+    n_neighbors=15,
+    random_state=42,
+    standarize=False,
+):
     if len(data.shape) > 2:
         data = data.reshape(data.shape[0], -1)
-    #data = StandardScaler().fit_transform(data) 
+    # data = StandardScaler().fit_transform(data)
 
-    umap_model = umap.UMAP(n_components=n_components, 
-                            n_neighbors=n_neighbors,
-                            min_dist=min_dist,
-                            random_state=random_state)
+    umap_model = umap.UMAP(
+        n_components=n_components,
+        n_neighbors=n_neighbors,
+        min_dist=min_dist,
+        random_state=random_state,
+    )
 
     umap_result = umap_model.fit_transform(data)
     return umap_result
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -53,9 +62,8 @@ if __name__ == "__main__":
     print(model_parameters)
 
     # output directory
-    output_dir = pathlib.Path(
-        io_parameters["output_dir"] + "/" + io_parameters["uid_save"]
-    )
+    write_dir = io_parameters["output_dir"]
+    output_dir = pathlib.Path(write_dir + "/" + io_parameters["uid_save"])
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -66,20 +74,15 @@ if __name__ == "__main__":
     if uid_retrieve is not None:
         # Get feature vectors from autoencoder
         stacked_images = pd.read_parquet(
-            f"data/mlexchange_store/{uid_retrieve}/f_vectors.parquet"
+            f"{write_dir}/{uid_retrieve}/f_vectors.parquet"
         ).values
 
     else:
         data_uris = io_parameters["data_uris"]
 
         for uri in data_uris:
-            if "data/example_shapes/Demoshapes.npz" in uri:  # example dataset
+            if "Demoshapes.npz" in uri:  # example dataset
                 images = np.load(uri)["arr_0"]
-            elif (
-                "data/example_latentrepresentation/f_vectors.parquet" in uri
-            ):  # example dataset
-                df = pd.read_parquet(uri)
-                images = df.values
 
             else:
                 # FM, file system or tiled
@@ -101,20 +104,21 @@ if __name__ == "__main__":
             else:
                 stacked_images = np.concatenate((stacked_images, images), axis=0)
 
+    start_time = time.time()
 
-    start_time = time.time()    
-    
     # Run UMAP
-    latent_vectors = computeUMAP(images, 
-                                 n_components=model_parameters['n_components'],
-                                 min_dist=model_parameters['min_dist'],
-                                 n_neighbors=model_parameters['n_neighbors'])
+    latent_vectors = computeUMAP(
+        images,
+        n_components=model_parameters["n_components"],
+        min_dist=model_parameters["min_dist"],
+        n_neighbors=model_parameters["n_neighbors"],
+    )
 
     # Save latent vectors
-    output_name = 'latent_vectors.npy'
-    save_path = str(output_dir) + '/' + output_name
+    output_name = "latent_vectors.npy"
+    save_path = str(output_dir) + "/" + output_name
     print(save_path)
-    np.save(str(output_dir) + '/' + output_name, latent_vectors)
+    np.save(str(output_dir) + "/" + output_name, latent_vectors)
 
     print("UMAP done, latent vector saved.")
     end_time = time.time()
