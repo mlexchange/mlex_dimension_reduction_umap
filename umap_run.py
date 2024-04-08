@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # Run UMAP
     latent_vectors = computeUMAP(
-        images,
+        stacked_images,
         n_components=model_parameters["n_components"],
         min_dist=model_parameters["min_dist"],
         n_neighbors=model_parameters["n_neighbors"],
