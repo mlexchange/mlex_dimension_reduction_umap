@@ -17,11 +17,11 @@ test:
 	echo ${ID_USER}
 
 build_docker: 
-	docker build -t ${IMG_WEB_SVC} -f ./docker/Dockerfile .
+	docker build -t ${IMG_WEB_SVC} -f ./Dockerfile .
 
 
 build_podman:
-	podman build -t ghcr.io/runboj/mlex_dimension_reduction_umap:main -f ./docker/Dockerfile .
+	podman build -t ghcr.io/runboj/mlex_dimension_reduction_umap:main -f ./Dockerfile .
 
 run_docker:
 	docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}/data:/app/work/data/ ${IMG_WEB_SVC} bash
