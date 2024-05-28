@@ -1,0 +1,42 @@
+[project]
+name = "mlex_dimension_reduction_pca"
+version = "0.0.1"
+authors = [
+    { name="Runbo Jiang", email="rjiang2@lbl.gov"}
+]
+description = "UMAP algorithm for dimension reduction."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "pydantic",
+    "numpy",
+    "scikit-image",
+    "Pillow",
+    "joblib",
+    "scikit-learn",
+    "requests",
+    "umap-learn",
+    "pandas",
+    "pyarrow",
+]
+
+[project.optional-dependencies]
+# These are required for developing the package (running the tests, building
+# the documentation) but not necessarily required for _using_ it.
+dev = [
+    "flake8",
+    "pre-commit",
+    "pytest-mock",
+]
+
+[project.urls]
+Homepage = "https://github.com/mlexchange/mlex_dimension_reduction_pca"
+Issues = "https://github.com/mlexchange/mlex_dimension_reduction_pca/issues/"
+
+[tool.isort]
+profile = "black"
