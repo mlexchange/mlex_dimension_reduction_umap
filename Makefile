@@ -19,7 +19,6 @@ test:
 build_docker: 
 	docker build -t ${IMG_WEB_SVC} -f ./Dockerfile .
 
-
 build_podman:
 	podman build -t ghcr.io/runboj/mlex_dimension_reduction_umap:main -f ./Dockerfile .
 
