@@ -6,7 +6,7 @@ import pandas as pd
 import time
 import yaml
 from tiled.client import from_uri
-from utils import load_images_from_directory
+from mlex_dimension_reduction_pca.utils import load_images_from_directory
 
 """ Compute UMAP
     Input: 1d data (N, M) or 2d data (N, H, W)

@@ -1,7 +1,7 @@
 import numpy as np
 import unittest
 
-from umap_run import computeUMAP
+from mlex_dimension_reduction_pca.umap_run import computeUMAP
 
 
 class TestComputeUMAP(unittest.TestCase):
