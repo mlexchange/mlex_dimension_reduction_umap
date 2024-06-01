@@ -9,4 +9,4 @@ umap-learn
 pandas
 pyarrow
 pyyaml
-tiled[client]==0.1.0a107
+tiled[client]==0.1.0a116
