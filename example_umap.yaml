@@ -3,13 +3,16 @@
 # I/O
 io_parameters:
   uid_retrieve: # uid for feature vectors from autoencoder
-  data_tiled_uri: https://tiled-seg.als.lbl.gov/api/v1/metadata/reconstruction/rec20190524_085542_clay_testZMQ_8bit/20190524_085542_clay_testZMQ_
-  data_tiled_api_key:
-  results_tiled_uri: https://tiled-seg.als.lbl.gov/api/v1/metadata/umap/20190524_085542_clay_testZMQ_8bit/20190524_085542_clay_testZMQ_
-  results_tiled_api_key:
   data_type: 'file' # either "file" or "tiled"
+  root_uri: https://tiled-seg.als.lbl.gov/api/v1/metadata/reconstruction/rec20190524_085542_clay_testZMQ_8bit
+  data_uris: ['20190524_085542_clay_testZMQ_']
+  data_tiled_api_key:
+  result_tiled_uri: http://localhost:8888
+  result_tiled_api_key:
   uid_save:
   output_dir: 'data/output'
+  load_model_path:
+  save_model_path:
 
 model_parameters:
   n_components: 2
