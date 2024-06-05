@@ -46,11 +46,14 @@ def load_data(io_parameters, tiled_dataset, logger=None):
         else:  # tiled
             for uri in io_parameters.data_uris:
                 images = tiled_dataset.load_data_from_tiled(io_parameters.data_uris[0])
+                if len(images.shape) == 2:
+                    images = images[np.newaxis,]
                 if stacked_images is None:
                     stacked_images = images
                 else:
                     stacked_images = np.concatenate((stacked_images, images), axis=0)
             logger.info(f"Images loaded from {io_parameters.root_uri}")
+    logger.info(f"Data shape: {stacked_images.shape}")
     return stacked_images
 
 
