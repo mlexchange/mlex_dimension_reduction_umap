@@ -23,7 +23,7 @@ dependencies = [
     "umap-learn",
     "pandas",
     "pyarrow",
-    "tiled[client]",
+    "tiled[client]==0.1.0a118",
 ]
 
 [project.optional-dependencies]
