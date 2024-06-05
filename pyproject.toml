@@ -30,7 +30,8 @@ dependencies = [
 # the documentation) but not necessarily required for _using_ it.
 dev = [
     "flake8",
-    "pre-commit"
+    "pre-commit",
+    "pytest",
 ]
 
 [project.urls]
