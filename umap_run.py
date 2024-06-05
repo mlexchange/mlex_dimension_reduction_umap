@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import time
 
 import yaml
@@ -11,6 +12,8 @@ from src.utils.tiled_utils import TiledDataset
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+console_handler = logging.StreamHandler()
+logger.addHandler(console_handler)
 
 
 if __name__ == "__main__":
@@ -43,11 +46,20 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Run UMAP
+    if io_parameters.save_model_path is not None:
+        os.makedirs(io_parameters.save_model_path, exist_ok=True)
+        save_model_path = (
+            f"{io_parameters.save_model_path}/{io_parameters.uid_save}.joblib"
+        )
+    else:
+        save_model_path = None
     latent_vectors = compute_umap(
         stacked_images,
         n_components=model_parameters.n_components,
         min_dist=model_parameters.min_dist,
         n_neighbors=model_parameters.n_neighbors,
+        load_model_path=io_parameters.load_model_path,
+        save_model_path=save_model_path,
     )
 
     save_results(latent_vectors, io_parameters, tiled_dataset, parameters)

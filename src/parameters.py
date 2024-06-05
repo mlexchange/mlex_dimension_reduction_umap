@@ -25,3 +25,5 @@ class IOParameters(BaseModel):
     result_tiled_api_key: Optional[str] = Field(description="tiled api key")
     uid_save: str = Field(description="uid to save data to")
     output_dir: str = Field(description="output directory")
+    load_model_path: Optional[str] = None
+    save_model_path: Optional[str] = None
