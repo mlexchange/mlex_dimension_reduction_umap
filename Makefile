@@ -17,13 +17,16 @@ test:
 	echo ${ID_USER}
 
 build_docker: 
-	docker build -t ${IMG_WEB_SVC} -f ./docker/Dockerfile .
+	docker build -t ${IMG_WEB_SVC} -f ./Dockerfile .
+
+build_podman:
+	podman build -t ghcr.io/runboj/mlex_dimension_reduction_umap:main -f ./Dockerfile .
 
 run_docker:
 	docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}/data:/app/work/data/ ${IMG_WEB_SVC} bash
 
 UMAP_example:
-	docker run -u ${ID_USER $USER}:${ID_GROUP $USER} --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}:/app/work/ ${IMG_WEB_SVC} python umap_run.py data/example_shapes/Demoshapes.npz data/output '{"n_components": 2, "min_dist": 0.1, "n_neighbors": 7}'
+	docker run -u ${ID_USER $USER}:${ID_GROUP $USER} --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --memory-swap -1 -it -v ${PWD}:/app/work/ ${IMG_WEB_SVC} python src/mlex_dimension_reduction_umap/umap_run.py example_umap.yaml
 
 
 push_docker:
