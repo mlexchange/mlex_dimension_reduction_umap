@@ -13,6 +13,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "dask==2024.3.0",
     "pydantic",
     "numpy",
     "scikit-image",

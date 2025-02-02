@@ -37,9 +37,9 @@ if __name__ == "__main__":
         data_uri = io_parameters.root_uri
     tiled_dataset = TiledDataset(
         data_uri,
-        io_parameters.result_tiled_uri,
+        io_parameters.results_tiled_uri,
         read_tiled_key=io_parameters.data_tiled_api_key,
-        write_tiled_key=io_parameters.result_tiled_api_key,
+        write_tiled_key=io_parameters.results_tiled_api_key,
     )
     stacked_images = load_data(io_parameters, tiled_dataset, logger)
 
