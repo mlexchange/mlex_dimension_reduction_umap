@@ -1,4 +1,4 @@
-TAG 			:= latest	
+TAG 			:= latest
 USER 			:= mlexchange
 PROJECT			:= dimension-reduction-umap
 
@@ -16,7 +16,7 @@ test:
 	echo ${PROJECT}:${TAG}
 	echo ${ID_USER}
 
-build_docker: 
+build_docker:
 	docker build -t ${IMG_WEB_SVC} -f ./Dockerfile .
 
 build_podman:
@@ -31,7 +31,7 @@ UMAP_example:
 
 push_docker:
 	docker push ${IMG_WEB_SVC}
-clean: 
+clean:
 	find -name "*~" -delete
 	-rm .python_history
 	-rm -rf .config

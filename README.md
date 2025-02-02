@@ -1,5 +1,5 @@
 # mlex_dimension_reduction
-Dimension reduction algorithms for the MLExchange platform. 
+Dimension reduction algorithms for the MLExchange platform.
   - [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html)
   - [UMAP](https://umap-learn.readthedocs.io/en/latest/)
 

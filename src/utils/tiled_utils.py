@@ -16,7 +16,7 @@ class TiledDataset:
 
     def load_data_from_tiled(self, uri):
         data_client = self.read_client[uri]
-        if isinstance(data_client,Container):
+        if isinstance(data_client, Container):
             data = []
             sub_uris = list(data_client)
             for sub_uri in sub_uris:
