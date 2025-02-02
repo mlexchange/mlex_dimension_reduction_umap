@@ -5,10 +5,10 @@ import time
 
 import yaml
 
-from src.dim_reduction import compute_umap
-from src.parameters import IOParameters, UMAPParameters
-from src.utils.data_utils import load_data, save_results
-from src.utils.tiled_utils import TiledDataset
+from dim_reduction import compute_umap
+from parameters import IOParameters, UMAPParameters
+from utils.data_utils import load_data, save_results
+from utils.tiled_utils import TiledDataset
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
