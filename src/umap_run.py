@@ -31,10 +31,13 @@ if __name__ == "__main__":
     logger.info(f"Parameters loaded: {model_parameters}")
 
     # Load images from given data_uris
-    if io_parameters.data_type == "file":
+    if io_parameters.uid_retrieve != "":
+        data_uri = f"{io_parameters.results_tiled_uri}/{io_parameters.uid_retrieve}"
+    elif io_parameters.data_type == "file":
         data_uri = None
     else:
         data_uri = io_parameters.root_uri
+
     tiled_dataset = TiledDataset(
         data_uri,
         io_parameters.results_tiled_uri,
