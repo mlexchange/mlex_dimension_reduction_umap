@@ -1,7 +1,9 @@
 import argparse
 import logging
 import os
+import sys
 import time
+import warnings
 
 import yaml
 
@@ -10,10 +12,13 @@ from parameters import IOParameters, UMAPParameters
 from utils.data_utils import load_data, save_results
 from utils.tiled_utils import TiledDataset
 
+warnings.filterwarnings("ignore")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s",
+    stream=sys.stdout,  # Force all logs to stdout
+)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-console_handler = logging.StreamHandler()
-logger.addHandler(console_handler)
 
 
 if __name__ == "__main__":
@@ -31,10 +36,13 @@ if __name__ == "__main__":
     logger.info(f"Parameters loaded: {model_parameters}")
 
     # Load images from given data_uris
-    if io_parameters.data_type == "file":
+    if io_parameters.uid_retrieve != "":
+        data_uri = f"{io_parameters.results_tiled_uri}/{io_parameters.uid_retrieve}"
+    elif io_parameters.data_type == "file":
         data_uri = None
     else:
         data_uri = io_parameters.root_uri
+
     tiled_dataset = TiledDataset(
         data_uri,
         io_parameters.results_tiled_uri,

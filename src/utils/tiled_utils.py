@@ -2,6 +2,7 @@ import numpy as np
 from tiled.client import from_uri
 from tiled.client.array import ArrayClient
 from tiled.client.container import Container
+from tiled.client.dataframe import DataFrameClient
 from tiled.structures.data_source import Asset, DataSource
 from tiled.structures.table import TableStructure
 
@@ -22,9 +23,11 @@ class TiledDataset:
             for sub_uri in sub_uris:
                 if isinstance(data_client[sub_uri], ArrayClient):
                     data.append(self.read_client[uri][sub_uri][:])
-            return np.stack(data, axis=0)
+            return np.concatenate(data, axis=0)
         elif isinstance(data_client, ArrayClient):
-            return self.read_client[uri][:]
+            return data_client[:]
+        elif isinstance(data_client, DataFrameClient):
+            return data_client.read().to_numpy()
         else:
             raise ValueError(f"Data structure not supported: {type(data_client)}")
 

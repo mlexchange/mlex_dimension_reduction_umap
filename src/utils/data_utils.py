@@ -25,17 +25,24 @@ def load_data(io_parameters, tiled_dataset, logger=None):
 
     # Get feature vectors from autoencoder
     if uid_retrieve != "":
-        write_dir = io_parameters.results_dir
-        retrieve_path = f"{write_dir}/{uid_retrieve}/latent_vectors.parquet"
-        stacked_images = pd.read_parquet(retrieve_path).values
-        logger.info(f"Feature vectors loaded from {retrieve_path}")
-
+        stacked_images = tiled_dataset.load_data_from_tiled("feature_vectors")
+        logger.info("Dataframe loaded from autoencoder")
+    elif io_parameters.data_type == "tiled":
+        for uri in io_parameters.data_uris:
+            images = tiled_dataset.load_data_from_tiled(uri)
+            if len(images.shape) == 2:
+                images = images[np.newaxis,]
+            if stacked_images is None:
+                stacked_images = images
+            else:
+                stacked_images = np.concatenate((stacked_images, images), axis=0)
+        logger.info(f"Images loaded from {io_parameters.root_uri}")
     else:
         stacked_images = None
         if io_parameters.data_type == "file":
             for uri in io_parameters.data_uris:
                 images = load_images_from_directory(
-                    io_parameters.root_uri + "/" + uri,
+                    os.path.join(io_parameters.root_uri, uri),
                     logger,
                 )
                 if stacked_images is None:
@@ -43,16 +50,7 @@ def load_data(io_parameters, tiled_dataset, logger=None):
                 else:
                     stacked_images = np.concatenate((stacked_images, images), axis=0)
             logger.info(f"Images loaded from {io_parameters.root_uri}")
-        else:  # tiled
-            for uri in io_parameters.data_uris:
-                images = tiled_dataset.load_data_from_tiled(io_parameters.data_uris[0])
-                if len(images.shape) == 2:
-                    images = images[np.newaxis,]
-                if stacked_images is None:
-                    stacked_images = images
-                else:
-                    stacked_images = np.concatenate((stacked_images, images), axis=0)
-            logger.info(f"Images loaded from {io_parameters.root_uri}")
+
     logger.info(f"Data shape: {stacked_images.shape}")
     return stacked_images
 
